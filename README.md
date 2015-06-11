@@ -5,7 +5,7 @@ this is a karel like program,
 the goal is to implement a complete language but it is still missing some parts
 so far there is a basic interpreter and parser 
 -------
-<h4> Instructions: <h4>
+<h4> Instructions: </h4>
 first start play.py
 on unix-like systems: *python play.py [file with instructions]*
 ![Pyrel start](/screenshots/pyrel_0.png)
