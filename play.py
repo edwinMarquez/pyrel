@@ -7,10 +7,6 @@ import resources.mapa as mapa
 import resources.parser as parser
 
 
-canvasWidth = 421
-canvasHeigth = 421
-rectSize = 20
-problem = False
 
 #definitions
 def realcoordinate(x, y):
@@ -33,6 +29,7 @@ def lookDown():
 
 
 def logic():
+	global problem
 	if not instruction:
 		return False
 	i = instruction.pop(0)
@@ -78,18 +75,23 @@ def logic():
 		pass
 	else:
 		pass
-
 	if(instruction):
-		start()
+		master.after(1000, logic)
 	elif(not problem):
-		tkMessageBo.showinfo("Good","Execution complete :D")
+		tkMessageBox.showinfo("Good","Execution complete :D")
 
 def start():
-	master.after(1000, logic)
+	iltext = text.get(1.0, END)
+	aparser = parser.Parser()
+	instruction[:] = aparser.parse(iltext)
+	master.after(1000,logic)
 
-#setting up variables
-aparser = parser.Parser()
-instruction = aparser.parse(sys.argv[1]) #no validation yet
+
+canvasWidth = 421
+canvasHeigth = 421
+rectSize = 20
+problem = False #was there a problem in the execution
+instruction = []
 boundss = {'minx':0, 'maxx':20, 'miny':0, 'maxy':20}
 walls = []
 amap = mapa.Map([],boundss, walls)
@@ -98,9 +100,9 @@ arobot = robot.Robot(1,0,0,0, amap)
 #GUI
 master = Tk()
 canvas = Canvas(master, 
-		  width=421,
-		  height=421)
-canvas.pack()
+		  width=canvasWidth,
+		  height=canvasHeigth)
+canvas.pack(side = LEFT)
 
 bg = PhotoImage(file="./resources/rejilla.ppm")
 pyrel = []
@@ -115,10 +117,30 @@ cord = realcoordinate(0, 0) #set the initial position of the robot
 
 pyrelrobot = canvas.create_image(cord[0],cord[1], anchor=NW, image=pyrel[0])
 
+textFrame = Frame(master)
+
+yscrollbar = Scrollbar(textFrame)
+text = Text(textFrame, height = 29, width = 50,yscrollcommand = yscrollbar.set, wrap = NONE)
+text.pack(side = LEFT)
+yscrollbar.config(command=text.yview)
+
+textFrame.pack(side = RIGHT)
+yscrollbar.pack(side=RIGHT, fill=Y)
+
+#input of a filename through command line 
+if len(sys.argv) > 1 :
+	print sys.argv
+	afile = open(sys.argv[1])
+	lines = afile.read()
+	afile.close()
+	text.insert(INSERT, lines, "a")
+#input code from a file 
+
+#buttons
 btnStart = Button(master, text="Start", command=start)
 btnQuit = Button(master, text="Quit", command=master.quit)
 
-btnStart.pack()
-btnQuit.pack()
+btnStart.pack(side = BOTTOM, fill=X)
+btnQuit.pack(side = BOTTOM, fill = X)
 
 mainloop()

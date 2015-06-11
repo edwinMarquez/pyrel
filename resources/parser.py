@@ -14,11 +14,9 @@ class Parser:
 	def __init__(self):
 		pass
 
-	def parse(self, location):
+	def parse(self, string):
 		commands = []
-		txt = open(location)
-		lines = [line.strip() for line in txt]
-		txt.close()
+		lines = [ l.strip() for l in string.split()]
 		for line in lines:
 			if line == "move":
 				commands.append(1)
@@ -37,3 +35,10 @@ class Parser:
 			else: 
 				commands.append(99)
 		return commands
+
+	def parseFile(self, filelocation):
+		txt = open(filelocation)
+		lines = txt.read()
+		txt.close()
+		return parse(lines)
+
