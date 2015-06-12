@@ -9,19 +9,26 @@ class Map:
 		self.walls += pwalls
 
 	def isItem(self, x ,y):
-		return (str(x)+ '-' + str(y)) in map_items
+		return (str(x)+ '-' + str(y)) in self.map_items
 
 	def placeItem(self, x , y):
 		key = str(x) + '-' + str(y)
-		if( key in map_items):
-			map_items[key] += 1
+		if( key in self.map_items):
+			self.map_items[key] += 1
 		else:
-			map_items[key] = 1
+			self.map_items[key] = 1
 
 	def takeItem(self, x , y):
 		key = str(x) + '-' + str(y)
-		if(key in map_items):
-			map_items[key] -= 1
+		if(key in self.map_items):
+			self.map_items[key] -= 1
 			return True
 		else:
 			return False
+
+	def itemsInPosition(self,x,y):
+		key = str(x)+"-"+str(y)
+		if(key in self.map_items):
+			return self.map_items[key]
+		else:
+			return 0

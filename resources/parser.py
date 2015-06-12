@@ -7,6 +7,7 @@ class Parser:
 	4: lookDown
 	5: putItem
 	6: pickItem
+	7: 
 	98: -whiteline
 	99: -noRealInstruction
   """

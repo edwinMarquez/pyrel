@@ -3,9 +3,9 @@ class Robot:
 
 	def __init__(self, looking, x, y, items, mapa):
 		""" start the robot \n
-		    looking is the direction that the robot is looking at
-		    1 up, 2 right, 3 down, 4 left \n
-		    boundss is a dictionari with the limits of the map in maxy miny maxx minx"""
+			looking is the direction that the robot is looking at
+			1 up, 2 right, 3 down, 4 left \n
+			boundss is a dictionari with the limits of the map in maxy miny maxx minx"""
 		self.looking = looking   
 		self.x = x			     #position x in the grid
 		self.y = y               #position y in the grid
@@ -19,7 +19,7 @@ class Robot:
 		if self.looking == 1:
 			if(self.y >= self.mapa.bounds['maxy']):
 				return False
-			elif(self.__createWallKey(self.x+1,self.y) in self.mapa.walls):
+			elif(self.robot_wallInfront()):
 				return False
 			else: 
 				self.y += 1
@@ -27,7 +27,7 @@ class Robot:
 		elif self.looking == 2:
 			if(self.x == self.mapa.bounds['maxx']):
 				return False
-			elif(self.__createWallKey(self.x,self.y+1) in self.mapa.walls):
+			elif(self.robot_wallAtRight()):
 				return False
 			else:
 				self.x += 1
@@ -35,7 +35,7 @@ class Robot:
 		elif self.looking == 3:
 			if(self.y == self.mapa.bounds['miny']):
 				return False
-			elif(self.__createWallKey(self.x,self.y-1) in self.mapa.walls):
+			elif(self.robot_wallDown()):
 				return False
 			else:
 				self.y -= 1
@@ -43,7 +43,7 @@ class Robot:
 		elif self.looking == 4:
 			if(self.x == self.mapa.bounds['minx']):
 				return False
-			elif(self.__createWallKey(self.x-1,self.y) in self.mapa.walls):
+			elif(robot_wallAtLeft()):
 				return False
 			else:
 				self.x -= 1
@@ -65,6 +65,23 @@ class Robot:
 
 	def robot_setLooking(self, looking):
 		self.looking = looking
+
+	def robot_wallInfront(self):
+		return self.__createWallKey(self.x+1,self.y) in self.mapa.walls
+
+	def robot_wallAtRight(self):
+		return self.__createWallKey(self.x,self.y+1) in self.mapa.walls
+
+	def robot_wallDown(self):
+		return self.__createWallKey(self.x,self.y-1) in self.mapa.walls
+
+	def robot_wallAtLeft(self):
+		return self.__createWallKey(self.x-1,self.y) in self.mapa.walls
+
+	def robot_getX(self):
+		return self.x
+	def robot_getY(self):
+		return self.y
 
 
 

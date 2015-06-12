@@ -28,6 +28,14 @@ def lookDown():
 	canvas.itemconfig(pyrelrobot, image = pyrel[2])
 
 
+def drawItem(x, y):
+	cor = realcoordinate(x,y)
+	return canvas.create_image(cor[0],cor[1], anchor = NW, image=itmImg)
+def pickItem(itemId):
+	canvas.delete(itemId)
+
+
+
 def logic():
 	global problem
 	if not instruction:
@@ -68,11 +76,33 @@ def logic():
 		lookDown()
 		arobot.robot_setLooking(3)
 	elif i == 5: #putItem
-		pass
+		print("placing Item")
+		x = arobot.robot_getX()
+		y = arobot.robot_getY()
+		numItems = amap.itemsInPosition(x,y)
+		amap.placeItem(x, y)
+		if(numItems == 0):
+			itmInMap[str(x)+"-"+str(y)] = drawItem(x,y) #no need to update if there is already an Image
+		
 	elif i == 6: #pickItem
-		pass
+		print("picking Item")
+		x = arobot.robot_getX()
+		y = arobot.robot_getY()
+		numItems = amap.itemsInPosition(x,y)
+		if(numItems == 0):
+			problem = True
+			print "robot says: No item to take"
+			instruction[:] = []
+			tkMessageBox.showwarning("No Item","The robot didn't find an Item and turned off")
+		else:
+			amap.takeItem(x,y)
+			if(numItems == 1):
+				pickItem(itmInMap[str(x)+"-"+str(y)])
 	elif i == 99: #wrong instruction
-		pass
+		problem = True
+		print("robot says: I can't understand")
+		instruction[:] = []
+		tkMessageBox.showwarning("Language","The robot can't understand and has turned off")
 	else:
 		pass
 	if(instruction):
@@ -110,6 +140,8 @@ pyrel.append(PhotoImage(file="./resources/robot.gif"))
 pyrel.append(PhotoImage(file="./resources/robot_r.gif"))
 pyrel.append(PhotoImage(file="./resources/robot_d.gif"))
 pyrel.append(PhotoImage(file="./resources/robot_l.gif"))
+itmImg = PhotoImage(file = "./resources/item.gif")
+itmInMap = {} #here ill register the positions of the items  sintax = {'x-y':imgId} 
 
 
 canvas.create_image(1,1, anchor = NW, image=bg)
