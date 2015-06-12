@@ -18,7 +18,7 @@ rigth now there are only few instructions:<br>
 	 4. *lookDown*<br>
 	 5. *putItem*<br>
 	 6. *pickItem*<br> <br>
-	 Boolean Expresions
+	 Boolean Expresions <br><br>
 	 7. *isWallInfront* <br>
 	 8. *isWallAtRight* <br>
 	 9: *isWallBehind*  <br>
