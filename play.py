@@ -26,22 +26,15 @@ def lookUp():
 	canvas.itemconfig(pyrelrobot, image = pyrel[0])
 def lookDown():
 	canvas.itemconfig(pyrelrobot, image = pyrel[2])
-
-
 def drawItem(x, y):
 	cor = realcoordinate(x,y)
 	return canvas.create_image(cor[0],cor[1], anchor = NW, image=itmImg)
 def pickItem(itemId):
 	canvas.delete(itemId)
 
-
-
-def logic():
+def doAction(action):  #executes the actions
 	global problem
-	if not instruction:
-		return False
-	i = instruction.pop(0)
-	if i == 1: #move
+	if action == 1: #move
 		canDo = arobot.robot_moveinfront();
 		if canDo:
 			look = arobot.robot_getLooking()
@@ -59,11 +52,11 @@ def logic():
 			print "HIT D:"
 			instruction[:] = [] #ends the execution
 			tkMessageBox.showwarning("Hit", "The robot was broken, in a wall :(")
-	elif i == 2: #lookUp
+	elif action == 2: #lookUp
 		print("looking Up now sir")
 		lookUp()
 		arobot.robot_setLooking(1)
-	elif i == 3: #turnRight
+	elif action == 3: #turnRight
 		print("Turning right")
 		look = arobot.robot_getLooking()
 		if look == 4:
@@ -72,19 +65,24 @@ def logic():
 		else:
 			arobot.robot_setLooking(look+1)
 			rotate_right(look + 1)
-	elif i == 4: #lookDown
+	elif action == 4: #lookDown
 		lookDown()
 		arobot.robot_setLooking(3)
-	elif i == 5: #putItem
-		print("placing Item")
+	elif action == 5: #putItem
 		x = arobot.robot_getX()
 		y = arobot.robot_getY()
 		numItems = amap.itemsInPosition(x,y)
-		amap.placeItem(x, y)
-		if(numItems == 0):
-			itmInMap[str(x)+"-"+str(y)] = drawItem(x,y) #no need to update if there is already an Image
-		
-	elif i == 6: #pickItem
+		if(arobot.robot_putItem()):
+			print("placing Item")
+			if(numItems == 0):
+				itmInMap[str(x)+"-"+str(y)] = drawItem(x,y) #no need to update if there is already an Image
+		else:
+			problem = True
+			print "robot says: I don't have items"
+			instruction[:] = []
+			tkMessageBox.showwarning("Give me Items", "The robot has no items to put and turned off")
+
+	elif action == 6: #pickItem
 		print("picking Item")
 		x = arobot.robot_getX()
 		y = arobot.robot_getY()
@@ -98,7 +96,12 @@ def logic():
 			amap.takeItem(x,y)
 			if(numItems == 1):
 				pickItem(itmInMap[str(x)+"-"+str(y)])
-	elif i == 99: #wrong instruction
+	elif action >= 80 and action <= 85:                    #booleans values
+		if(booleanEval(action)):
+			print "robot says: Yes"
+		else:
+			print "robot says: No"
+	elif action == 99: #wrong instruction
 		problem = True
 		print("robot says: I can't understand")
 		instruction[:] = []
@@ -109,6 +112,29 @@ def logic():
 		master.after(1000, logic)
 	elif(not problem):
 		tkMessageBox.showinfo("Good","Execution complete :D")
+
+def booleanEval(boolNum):
+	if(boolNum == 80):
+		return arobot.robot_isWallInfront()
+	elif(boolNum == 81):
+		return arobot.robot_isWallAtRight()
+	elif(boolNum == 82):
+		return arobot.robot_isWallBehind()
+	elif(boolNum == 83):
+		return arobot.robot_isWallAtLeft()
+	elif(boolNum == 84):
+		return arobot.robot_isOverItem()
+	elif(boolNum == 85):
+		return arobot.robot_hasItem()
+	else:
+		pass
+
+def logic():
+	if not instruction:
+		return False
+	i = instruction.pop(0)
+	doAction(i)
+
 
 def start():
 	iltext = text.get(1.0, END)
@@ -125,7 +151,7 @@ instruction = []
 boundss = {'minx':0, 'maxx':20, 'miny':0, 'maxy':20}
 walls = []
 amap = mapa.Map([],boundss, walls)
-arobot = robot.Robot(1,0,0,0, amap)
+arobot = robot.Robot(1,0,0,10, amap)  #@params looking, x , y, items, map
 
 #GUI
 master = Tk()

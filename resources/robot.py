@@ -17,9 +17,9 @@ class Robot:
 
 	def robot_moveinfront(self):
 		if self.looking == 1:
-			if(self.y >= self.mapa.bounds['maxy']):
+			if(self.y == self.mapa.bounds['maxy']):
 				return False
-			elif(self.robot_wallInfront()):
+			elif(self.robot_wallUp()):
 				return False
 			else: 
 				self.y += 1
@@ -54,7 +54,7 @@ class Robot:
 
 	def robot_putItem(self):
 		if(self.items > 0):
-			items -= 1
+			self.items -= 1
 			self.mapa.placeItem(x,y)
 			return True
 		else:
@@ -66,7 +66,7 @@ class Robot:
 	def robot_setLooking(self, looking):
 		self.looking = looking
 
-	def robot_wallInfront(self):
+	def robot_wallUp(self):
 		return self.__createWallKey(self.x+1,self.y) in self.mapa.walls
 
 	def robot_wallAtRight(self):
@@ -77,6 +77,52 @@ class Robot:
 
 	def robot_wallAtLeft(self):
 		return self.__createWallKey(self.x-1,self.y) in self.mapa.walls
+
+	def robot_isWallInfront(self):
+		if(self.looking == 1):
+			return self.robot_wallUp() or self.y == self.mapa.bounds['maxy']
+		elif(self.looking == 2):
+			return self.robot_wallAtRight() or self.x == self.mapa.bounds['maxx']
+		elif(self.looking == 3):
+			return self.robot_wallDown() or self.y == self.mapa.bounds['miny']
+		elif(self.looking == 4):
+			return self.robot_wallAtLeft() or self.x == self.mapa.bounds['minx']
+
+	def robot_isWallAtRight(self):
+		if(self.looking == 1):
+			return self.robot_wallAtRight() or self.x == self.mapa.bounds['maxx']
+		elif(self.looking == 2):
+			return self.robot_wallDown() or self.y == self.mapa.bounds['miny']
+		elif(self.looking == 3):
+			return self.robot_wallAtLeft() or self.x == self.mapa.bounds['minx']
+		elif(self.looking == 4):
+			return self.robot_wallUp() or self.y == self.mapa.bounds['maxy']
+
+	def robot_isWallBehind(self):
+		if(self.looking == 1):
+			return self.robot_wallDown() or self.y == self.mapa.bounds['miny']
+		elif(self.looking == 2):
+			return self.robot_wallAtLeft() or self.x == self.mapa.bounds['minx']
+		elif(self.looking == 3):
+			return self.robot_wallUp() or self.y == self.mapa.bounds['maxy']
+		elif(self.looking == 4):
+			return self.robot_wallAtRight() or self.x == self.mapa.bounds['maxx']
+
+	def robot_isWallAtLeft(self):
+		if(self.looking == 1):
+			return self.robot_wallAtLeft() or self.x == self.mapa.bounds['minx']
+		elif(self.looking == 2):
+			return self.robot_wallUp() or self.y == self.mapa.bounds['maxy']
+		elif(self.looking == 3):
+			return self.robot_wallAtRight() or self.x == self.mapa.bounds['maxx']
+		elif(self.looking == 4):
+			return self.robot_wallDown() or self.y == self.mapa.bounds['miny']
+
+	def robot_isOverItem(self):
+		return self.mapa.itemsInPosition(self.x, self.y) > 0
+
+	def robot_hasItem(self):
+		return self.items > 0
 
 	def robot_getX(self):
 		return self.x
