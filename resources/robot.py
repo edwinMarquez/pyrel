@@ -55,7 +55,7 @@ class Robot:
 	def robot_putItem(self):
 		if(self.items > 0):
 			self.items -= 1
-			self.mapa.placeItem(x,y)
+			self.mapa.placeItem(self.x,self.y)
 			return True
 		else:
 			return False

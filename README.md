@@ -11,20 +11,23 @@ First, start play.py <br>
 on unix-like systems: *python play.py [file with instructions]*<br>
 ![Pyrel start](/screenshots/pyrel_0.png)
 If you specify a file with instructions they are going to be loaded in the text area
-rigth now there are only few instructions:<br>
+rigth now there are only these instructions:<br>
 	 1. *move*<br>
 	 2. *lookUp* <br>
 	 3. *turnRight*<br>
 	 4. *lookDown*<br>
 	 5. *putItem*<br>
 	 6. *pickItem*<br> <br>
+	 Control Expresions <br><br>
+	 7. *repeat n times* (any level of anidation )<br>
+	 8. *repeatEnd*<br>
 	 Boolean Expresions <br><br>
-	 7. *isWallInfront* <br>
-	 8. *isWallAtRight* <br>
-	 9: *isWallBehind*  <br>
-	10: *isWallAtLeft*  <br>
-	11: *isOverItem*    <br>
-	12: *hasItem*       <br>
+	 9. *isWallInfront* <br>
+	10. *isWallAtRight* <br>
+	11: *isWallBehind*  <br>
+	12: *isWallAtLeft*  <br>
+	13: *isOverItem*    <br>
+	14: *hasItem*       <br>
 
 
 ![Pyrel writec](/screenshots/pyrel_1.png)

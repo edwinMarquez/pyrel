@@ -1,4 +1,7 @@
 import sys
+import threading 
+import functools
+
 from Tkinter import * 
 import tkMessageBox
 
@@ -32,7 +35,7 @@ def drawItem(x, y):
 def pickItem(itemId):
 	canvas.delete(itemId)
 
-def doAction(action):  #executes the actions
+def doAction(action):  #executes the actions, backFun, 1 = return to logic() 2 = return to contorl logic
 	global problem
 	if action == 1: #move
 		canDo = arobot.robot_moveinfront();
@@ -106,12 +109,11 @@ def doAction(action):  #executes the actions
 		print("robot says: I can't understand")
 		instruction[:] = []
 		tkMessageBox.showwarning("Language","The robot can't understand and has turned off")
+	elif action == 100:
+		tkMessageBox.showinfo("Good","Execution complete :D")
 	else:
 		pass
-	if(instruction):
-		master.after(1000, logic)
-	elif(not problem):
-		tkMessageBox.showinfo("Good","Execution complete :D")
+		
 
 def booleanEval(boolNum):
 	if(boolNum == 80):
@@ -129,18 +131,35 @@ def booleanEval(boolNum):
 	else:
 		pass
 
-def logic():
-	if not instruction:
+
+def logic(ainstruction):
+	if not ainstruction:
 		return False
-	i = instruction.pop(0)
-	doAction(i)
+	if problem:
+		return False
+	i = ainstruction.pop(0)
+	if(isinstance(i, list)):
+		pi = i[:]
+		if(pi[0] == 70):  #if its a repeat instruction
+			if(pi[1] > 0):
+				pi[1] = i[1]-1
+				logic(pi[2][:]) #recursive call
+				ainstruction.insert(0, pi)
+				master.after(1000, lambda: logic(ainstruction[:]))
+			else:
+				master.after(1000, lambda: logic(ainstruction))
+	else:
+		doAction(i)
+		master.after(1000,lambda: logic(ainstruction))
+
+
 
 
 def start():
 	iltext = text.get(1.0, END)
 	aparser = parser.Parser()
-	instruction[:] = aparser.parse(iltext)
-	master.after(1000,logic)
+	instruction = aparser.parse(iltext)
+	master.after(1000,lambda: logic(instruction))
 
 
 canvasWidth = 421
